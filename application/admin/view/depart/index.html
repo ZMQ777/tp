@@ -1,0 +1,91 @@
+<script type="text/javascript">
+	var url;
+	function departAdd(){
+		$('#depart-dlg').dialog('open').dialog('setTitle','添加科室');
+		$('#depart-fm').form('clear');
+		url = '{:url('depart/save')}';
+	}
+	function departEdit(){
+		var row = $('#depart-dg').datagrid('getSelected');
+		if (row){
+			$('#depart-dlg').dialog('open').dialog('setTitle','编辑科室');
+			$('#depart-fm').form('load',row);
+			url = '{:url('depart/update')}'+'/id/'+row.id;
+		}
+	}
+	function departSave(){
+		$('#depart-fm').form('submit',{
+			url: url,
+			onSubmit: function(){
+				return $(this).form('validate');
+			},
+			success: function(result){
+				var result = eval('('+result+')');
+				if (result.success){
+					$('#depart-dlg').dialog('close');		// close the dialog
+					$('#depart-dg').datagrid('reload');	// reload the user data
+				} else {
+					$.messager.show({
+						title: '提示',
+						msg: result.msg
+					});
+				}
+			}
+		});
+	}
+	function departRemove(){
+		var row = $('#depart-dg').datagrid('getSelected');
+		if (row){
+			$.messager.confirm('提示','确认删除该科室?',function(r){
+				if (r){
+					$.post('{:url('depart/delete')}',{id:row.id},function(result){
+						if (result.success){
+							$('#depart-dg').datagrid('reload');	// reload the user data
+						} else {
+							$.messager.show({	// show error message
+								title: '提示',
+								msg: result.msg
+							});
+						}
+					},'json');
+				}
+			});
+		}
+	}
+</script>
+
+
+<div class="con">
+<table id="depart-dg" class="easyui-datagrid" 
+		url="{:url('depart/get')}"
+		toolbar="#depart-bar" striped="true"
+		rownumbers="true" fitColumns="true" singleSelect="true">
+	<thead>
+		<tr>
+			<th field="id" width="50">编号</th>
+			<th field="name" width="50">科室</th>
+
+		</tr>
+	</thead>
+</table>
+</div>
+<div id="depart-bar">
+	<a class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="departAdd()">添加科室</a>
+	<a class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="departEdit()">编辑科室</a>
+	<a class="easyui-linkbutton" iconCls="icon-cancel" plain="true" onclick="departRemove()">删除科室</a>
+</div>
+
+<div id="depart-dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+		closed="true" buttons="#depart-dlg-buttons">
+	<form id="depart-fm" method="post" novalidate>
+		<div class="fitem">
+			<label>名称:</label>
+			<input name="name" class="easyui-validatebox" required="true">
+		</div>
+
+	</form>
+</div>
+<div id="depart-dlg-buttons">
+	<a class="easyui-linkbutton" iconCls="icon-ok" onclick="departSave()">保存</a>
+	<a class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#depart-dlg').dialog('close')">关闭</a>
+</div>

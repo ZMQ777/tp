@@ -1,0 +1,75 @@
+<script language="javascript">
+	function onClickTree(node){
+		var id = node.id;
+		var tit = node.text;
+		var url = node.url;
+		var icon = node.iconCls;
+		// alert(url);
+		if(url){
+			addTabs(id,tit,url,icon);
+		}
+	}
+	
+	var idd = '';
+	var tit = '';
+	var url = '';
+	var icon = '';
+	function addTabs(id,tit,url,icon){
+		$(function(){
+			var mod = '1';
+			// alert(mod);
+			if(mod==1){
+				var ishas = $("#rightTabs").tabs('exists',tit);
+				if(!ishas){
+					$("#rightTabs").tabs('add',{
+						id : idd,
+						title : tit,
+						href : url,
+						closable : true,
+						iconCls : icon
+					});
+				}else{
+					$("#rightTabs").tabs('select',tit);
+				}
+			}else{
+				var ishas = $("#rightTabs").tabs('exists',tit);
+				if(!ishas){
+					var tab = $("#rightTabs").tabs('getTab',0);
+					$.get('', function(data){});
+					$("#rightTabs").tabs('update',{
+						tab:tab,
+						options:{
+							id:-1,
+							title : tit,
+							href : url,
+							closable : false,
+							iconCls : icon
+						} 
+					});
+				}else{
+					$("#rightTabs").tabs('select',tit);
+				}
+			}
+		});
+	}
+</script>
+<div id="leftMenu" data-options="fit:true,border:false" class="easyui-accordion">
+	<div title="就诊流程" data-options="iconCls:'icon-people'">		
+		<ul class="easyui-tree left-tree" data-options="url:'{:url('auth/get')}',editable:false,lines:true,method:'get',onClick:function(node){onClickTree(node);}"></ul>
+	</div>	
+	<div title="营销管理" data-options="iconCls:'icon-project'">
+	</div>
+	<div title="患者维护" data-options="iconCls:'icon-talk'">
+	</div>
+	<div title="体检套餐" data-options="iconCls:'icon-oked'">
+	</div>
+	<div title="收费项目设置" data-options="iconCls:'icon-production'">
+	</div>
+	<div title="模板设置" data-options="iconCls:'icon-task'">
+	</div>
+	<div title="统计报表" data-options="iconCls:'icon-sum'">
+	</div>
+	<div title="系统设置" data-options="iconCls:'icon-setting'">
+		<ul class="easyui-tree left-tree" data-options="url:'{:url('auth/get')}',editable:false,lines:true,method:'get',onClick:function(node){onClickTree(node);}"></ul>
+	</div>
+</div>

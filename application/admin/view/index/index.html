@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>武汉友好医院</title>
+<link rel="stylesheet" type="text/css" href="/static/themes/bootstrap/easyui.css">
+<link rel="stylesheet" type="text/css" href="/static/themes/icon.css">
+<link rel="stylesheet" type="text/css" href="/static/app.css">
+<script type="text/javascript" src="/static/jquery.min.js"></script>
+<script type="text/javascript" src="/static/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/static/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="/static/datagrid-filter.js"></script>
+</head>
+<body class="easyui-layout">
+ <div class="top" data-options="region:'north',border:false">
+  {include file='index/top'/}
+ </div>
+ <div data-options="region:'west',split:true,title:'工作台'," style="width:165px;">
+  {include file='index/left'/}
+ </div>
+ <div data-options="region:'center',split:true" >
+  <div id="rightTabs" class="easyui-tabs" data-options="fit:true,border:false">
+    <div title="系统首页" data-options="closable:false,id:-1,href:'{:url('index/main')}'"></div>
+  </div>
+ </div>
+</body>
+</html>

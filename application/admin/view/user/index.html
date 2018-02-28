@@ -1,0 +1,125 @@
+<script type="text/javascript">
+	var url;
+	function userAdd(){
+		$('#user-dlg').dialog('open').dialog('setTitle','添加用户');
+		$('#user-fm').form('clear');
+		url = '{:url('user/save')}';
+	}
+	function userEdit(){
+		var row = $('#user-dg').datagrid('getSelected');
+		if (row){
+			$('#user-dlg').dialog('open').dialog('setTitle','编辑用户');
+			$('#user-fm').form('load',row);
+			url = '{:url('user/update')}'+'/id/'+row.id;
+		}
+	}
+	function userSave(){
+		$('#user-fm').form('submit',{
+			url: url,
+			onSubmit: function(){
+				return $(this).form('validate');
+			},
+			success: function(result){
+				var result = eval('('+result+')');
+				if (result.success){
+					$('#user-dlg').dialog('close');		// close the dialog
+					$('#user-dg').datagrid('reload');	// reload the user data
+				} else {
+					$.messager.show({
+						title: '提示',
+						msg: result.msg
+					});
+				}
+			}
+		});
+	}
+	function userRemove(){
+		var row = $('#user-dg').datagrid('getSelected');
+		if (row){
+			$.messager.confirm('提示','确认删除该用户?',function(r){
+				if (r){
+					$.post('{:url('user/delete')}',{id:row.id},function(result){
+						if (result.success){
+							$('#user-dg').datagrid('reload');	// reload the user data
+						} else {
+							$.messager.show({	// show error message
+								title: '提示',
+								msg: result.msg
+							});
+						}
+					},'json');
+				}
+			});
+		}
+	}
+</script>
+
+<div class="con">
+<table id="user-dg" class="easyui-datagrid" 
+		url="{:url('user/get')}"
+		toolbar="#user-bar" striped="true" pagination="true"
+		rownumbers="true" fitColumns="true" singleSelect="true">
+	<thead>
+		<tr>
+			<th field="user" width="50">姓名</th>
+			<th field="pwd" width="50">密码</th>
+			<th field="sex" width="50">性别</th>
+			<th field="tel" width="50">电话</th>
+			<th field="group" width="50">角色</th>
+			<th field="department" width="50">部门</th>
+			<th field="company" width="50">公司</th>
+
+		</tr>
+	</thead>
+</table>
+</div>
+<div id="user-bar">
+	<a class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="userAdd()">添加用户</a>
+	<a class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="userEdit()">编辑用户</a>
+	<a class="easyui-linkbutton" iconCls="icon-cancel" plain="true" onclick="userRemove()">删除用户</a>
+</div>
+
+<div id="user-dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+		closed="true" buttons="#user-dlg-buttons">
+	<form id="user-fm" method="post" novalidate>
+		<div class="fitem">
+			<label>姓名:</label>
+			<input name="user" class="easyui-validatebox" required="true">
+		</div>
+		<div class="fitem">
+			<label>密码:</label>
+			<input name="pwd" class="easyui-validatebox">
+		</div>
+		<div class="fitem">
+			<label>性别:</label>
+			<input name="sex">
+		</div>
+		<div class="fitem">
+			<label>电话:</label>
+			<input name="tel" class="easyui-validatebox">
+		</div>
+		<div class="fitem">
+			<label>角色:</label>
+			<input class="easyui-combobox" name="group" data-options="
+					url:'{:url('depart/get')}',
+					method:'get',
+					valueField:'name',
+					textField:'name',
+					panelHeight:'auto'
+					">
+		</div>
+		<div class="fitem">
+			<label>部门:</label>
+			<input name="department" class="easyui-validatebox">
+		</div>
+		<div class="fitem">
+			<label>公司:</label>
+			<input name="company" class="easyui-validatebox">
+		</div>
+
+	</form>
+</div>
+<div id="user-dlg-buttons">
+	<a class="easyui-linkbutton" iconCls="icon-ok" onclick="userSave()">保存</a>
+	<a class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#user-dlg').dialog('close')">关闭</a>
+</div>
